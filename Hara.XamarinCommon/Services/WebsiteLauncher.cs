@@ -9,7 +9,7 @@ namespace Hara.XamarinCommon.Services
     {
         public async Task Launch(Uri uri)
         {
-            await Launcher.OpenAsync(uri);
+            await Browser.OpenAsync(uri);
         }
     }
 }

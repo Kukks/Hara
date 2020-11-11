@@ -1,13 +1,13 @@
 using System;
 using System.Net.Http;
 using Hara.Abstractions;
-using Hara.Server.Services;
+using Hara.Abstractions.Services;
+using Hara.XamarinCommon.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.FileProviders;
 
 namespace Hara.Server
 {
@@ -28,7 +28,8 @@ namespace Hara.Server
             services.AddServerSideBlazor();
 
             services.AddSingleton<ICounterState, CounterState>();
-            services.AddScoped<IWebsiteLauncher, WebsiteLauncher>();
+            services.AddScoped<IWebsiteLauncher, JsInteropWebsiteLauncher>();
+            services.AddScoped<ILocalContentFetcher, FileProviderLocalContentFetcher>();
             services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
             services.AddSingleton(provider =>
                 provider.GetService<IWebHostEnvironment>().WebRootFileProvider);

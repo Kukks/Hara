@@ -1,4 +1,5 @@
 ﻿using Hara.Abstractions;
+using Hara.Abstractions.Services;
 using Hara.XamarinCommon.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -19,6 +20,7 @@ namespace Hara.XamarinCommon
 
                     // Register app-specific services
                     services.AddSingleton<ICounterState, CounterState>();
+                    services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
                     services.AddSingleton<IWebsiteLauncher, WebsiteLauncher>();
                     services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
                 })

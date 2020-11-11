@@ -1,8 +1,6 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Hara.XamarinCommon;
 using Microsoft.MobileBlazorBindings.WebView.Android;

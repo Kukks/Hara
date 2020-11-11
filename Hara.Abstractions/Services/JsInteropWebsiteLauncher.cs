@@ -1,15 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using Hara.Abstractions;
 using Microsoft.JSInterop;
 
-namespace Hara.Server.Services
+namespace Hara.Abstractions.Services
 {
-    public class WebsiteLauncher : IWebsiteLauncher
+    public class JsInteropWebsiteLauncher : IWebsiteLauncher
     {
         private readonly IJSRuntime _jsRuntime;
 
-        public WebsiteLauncher(IJSRuntime jsRuntime)
+        public JsInteropWebsiteLauncher(IJSRuntime jsRuntime)
         {
             _jsRuntime = jsRuntime;
         }
