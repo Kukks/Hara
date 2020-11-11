@@ -125,6 +125,7 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="LiveSharp" Version="1.6.22" />
     <PackageReference Include="Microsoft.MobileBlazorBindings.WebView.iOS" Version="0.5.50-preview" />
     <PackageReference Include="System.Memory" Version="4.5.4" IncludeAssets="None" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />

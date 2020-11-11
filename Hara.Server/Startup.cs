@@ -29,7 +29,7 @@ namespace Hara.Server
 
             services.AddSingleton<ICounterState, CounterState>();
             services.AddScoped<IWebsiteLauncher, JsInteropWebsiteLauncher>();
-            services.AddScoped<ILocalContentFetcher, FileProviderLocalContentFetcher>();
+            services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
             services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
             services.AddSingleton(provider =>
                 provider.GetService<IWebHostEnvironment>().WebRootFileProvider);
