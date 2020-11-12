@@ -16,14 +16,13 @@ namespace LiveSharp
         // This method will be run during the start of your application and every time you update it
         public void Configure(ILiveSharpRuntime app) 
         {
-            app.Config.SetValue("pageHotReloadMethod", "build");
-            app.UseDefaultXamarinFormsHandler();
+
+            app.Config.SetValue("disableBlazorCSS", "false");
+            app.UseDefaultBlazorHandler();
         }
         
         public void Run(ILiveSharpRuntime app)
         {
-            // Use this method to execute any code in runtime
-            // Every time you update this method LiveSharp will invoke it
         }
     } 
 }
