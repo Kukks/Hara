@@ -19,7 +19,7 @@ namespace Hara.Windows
         {
             Forms.Init();
             BlazorHybridWindows.Init();
-            LoadApplication(new App());
+            LoadApplication(new App(null, collection => {}));
         }
     }
 }

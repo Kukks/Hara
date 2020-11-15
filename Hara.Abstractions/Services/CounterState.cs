@@ -1,7 +1,7 @@
 ﻿using System;
-using Hara.Abstractions;
+using Hara.Abstractions.Contracts;
 
-namespace Hara.XamarinCommon.Services
+namespace Hara.Abstractions.Services
 {
     public class CounterState : ICounterState
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hara.Abstractions
+namespace Hara.Abstractions.Contracts
 {
     public interface ICounterState
     {

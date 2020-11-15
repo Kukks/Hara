@@ -1,0 +1,85 @@
+@using Hara.Abstractions.Contracts
+@inject IConfigProvider ConfigProvider
+
+@if (loading)
+{
+    <h1>LOADING</h1>
+}
+<ul class="list-group">
+    @for (int i = 0; i < Items.Count; i++)
+    {
+        var item = Items.ElementAt(i);
+        <li class="list-group-item">
+            <label>@item.Key</label>
+            <input  
+                class="form-control" type="text" value="@item.Value" @onchange="args => UpdateItem(item.Key, (string) args.Value)"/>
+            <button
+                class="btn btn-danger"
+                @onclick="() => RemoveItem(item.Key)">
+                remove
+            </button>
+        </li>
+    }
+
+    <li class="list-group-item form-group">
+        <input type="text" @bind="newKey" placeholder="Key" class="form-control"/>
+        <input
+            class="form-control"
+            type="text" placeholder="value" @bind="newValue"/>
+        <button @onclick="AddItem" class="btn btn-primary">Add</button>
+    </li>
+</ul>
+
+@code {
+
+    private bool loading = true;
+    private string newKey = "";
+    private string newValue = "";
+
+    private Dictionary<string, string> Items { get; set; } = new Dictionary<string, string>();
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var keys = await ConfigProvider.Get<string[]>("settings");
+            if (keys != null)
+            {
+                foreach (var key in keys)
+                {
+                    Items.Add(key, await ConfigProvider.Get<string>(key));
+                }
+            }
+            loading = false;
+            StateHasChanged();
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private async Task UpdateItem(string key, string value)
+    {
+        await ConfigProvider.Set(key, value);
+    }
+
+    private async Task RemoveItem(string key)
+    {
+        Items.Remove(key);
+        await ConfigProvider.Set("settings", Items.Keys.ToArray());
+        await ConfigProvider.Set<string>(key, null);
+    }
+
+    private async Task AddItem()
+    {
+        if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(newValue) && !Items.ContainsKey(newKey))
+        {
+            await ConfigProvider.Set("settings", Items.Keys.ToArray().Concat(new[] {newKey}));
+            await ConfigProvider.Set(newKey, newValue);
+
+            Items.Add(newKey, newValue);
+            newKey = "";
+            newValue = "";
+        }
+    }
+
+}

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Hara.Abstractions
+namespace Hara.Abstractions.Contracts
 {
     public interface ILocalContentFetcher
     {

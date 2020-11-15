@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xamarin.Forms;
-
+﻿using Xamarin.Forms;
 using Foundation;
-using Hara.Xamarin;
+using Hara.Abstractions.Contracts;
+using Hara.iOS.Services.LocalNotifications.iOS;
 using Hara.XamarinCommon;
+using Microsoft.Extensions.DependencyInjection;
 using UIKit;
+using UserNotifications;
 
 namespace Hara.iOS
 {
@@ -28,9 +27,11 @@ namespace Hara.iOS
             global::Xamarin.Forms.Forms.Init();
 
             // For iOS, wrap inside a navigation page, otherwise the header looks wrong
-            var formsApp = new App();
+            var formsApp = new App(null,
+                collection => { collection.AddSingleton<INotificationManager, iOSNotificationManager>(); });
             formsApp.MainPage = new NavigationPage(formsApp.MainPage);
-
+            UNUserNotificationCenter.Current.Delegate =
+                new iOSNotificationReceiver(formsApp.ServiceProvider.GetService<iOSNotificationManager>());
             LoadApplication(formsApp);
 
             return base.FinishedLaunching(app, options);

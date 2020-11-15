@@ -2,6 +2,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Hara.Abstractions;
+using Hara.Abstractions.Contracts;
 
 namespace Hara.WASM.Services
 {

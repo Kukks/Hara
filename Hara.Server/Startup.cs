@@ -1,8 +1,10 @@
 using System;
 using System.Net.Http;
+using Blazor.Extensions;
 using Hara.Abstractions;
+using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
-using Hara.XamarinCommon.Services;
+using Hara.WebCommon;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,9 +33,12 @@ namespace Hara.Server
             services.AddScoped<IWebsiteLauncher, JsInteropWebsiteLauncher>();
             services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
             services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
+            services.AddScoped<IConfigProvider, JsInteropConfigProvider>();
             services.AddSingleton(provider =>
                 provider.GetService<IWebHostEnvironment>().WebRootFileProvider);
-            services.AddSingleton(new HttpClient() {BaseAddress = new Uri("http://127.0.0.1")});
+            
+            services.AddScoped<INotificationManager, WebNotificationManager>();
+            services.AddNotifications();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
+using Hara.Abstractions.Contracts;
 using Microsoft.Extensions.FileProviders;
 
 namespace Hara.Abstractions.Services

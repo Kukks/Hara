@@ -62,8 +62,11 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="LiveSharp.dashboard.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Services\iOSNotificationManager.cs" />
+    <Compile Include="Services\iOSNotificationReceiver.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,7 +128,7 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LiveSharp" Version="1.6.22" />
+    <PackageReference Include="LiveSharp" Version="1.6.26" />
     <PackageReference Include="Microsoft.MobileBlazorBindings.WebView.iOS" Version="0.5.50-preview" />
     <PackageReference Include="System.Memory" Version="4.5.4" IncludeAssets="None" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />
@@ -133,6 +136,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\Hara.Abstractions\Hara.Abstractions.csproj">
+      <Project>{54720011-3bf0-4eea-9b66-f5feeba46d49}</Project>
+      <Name>Hara.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hara.UI\Hara.UI.csproj">
       <Project>{aa178187-751c-4d38-b6ba-6312eeef7dd3}</Project>
       <Name>Hara.UI</Name>

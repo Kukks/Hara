@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Hara.Abstractions
+namespace Hara.Abstractions.Contracts
 {
     public interface IWeatherForecastFetcher
     {

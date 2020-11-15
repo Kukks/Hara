@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Hara.Abstractions
+namespace Hara.Abstractions.Contracts
 {
     public interface IWebsiteLauncher
     {

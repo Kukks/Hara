@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Hara.Abstractions.Contracts;
 using Microsoft.JSInterop;
 
-namespace Hara.Abstractions.Services
+namespace Hara.WebCommon
 {
     public class JsInteropWebsiteLauncher : IWebsiteLauncher
     {
