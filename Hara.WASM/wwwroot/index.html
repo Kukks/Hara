@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -10,10 +10,27 @@
     <script src="_content/Hara.WebCommon/blazor.extensions.notifications.js"></script>
     <link href="_content/Hara.UI/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="_content/Hara.UI/css/app.css" rel="stylesheet" />
+
+    <!-- bootstrap is *hara* use ionic TODO get from local -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+    <script typeof="text/javascript">
+        window.showIonAlert = () => {
+        const alert = document.createElement('ion-alert');
+        alert.header = 'Alert';
+        alert.message = 'Title already in the list.';
+        alert.buttons = ['OK'];
+
+        document.body.appendChild(alert);
+        return alert.present();
+        }
+    </script>
 </head>
 
 <body>
-    <app>Loading...</app>
+    <ion-app>Loading...</ion-app>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.

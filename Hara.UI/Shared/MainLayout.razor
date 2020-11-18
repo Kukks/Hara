@@ -1,15 +1,31 @@
-﻿@inherits LayoutComponentBase
+﻿@*//MainLayour.razor *@
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+<ion-menu side="start" content-id="main-content">
+    <ion-header>
+        <ion-toolbar translucent>
+            <ion-title>Menu</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            @*// Handling onclick *@
+            <ion-item @onclick="NavigateToComponent">
+                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                <ion-label>Add Card</ion-label>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-menu>
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="https://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
+@*// Placeholder where all the pages will be rendered *@
+@Body
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+@code {
+    private void NavigateToComponent()
+    {
+        @*// Going to our new page *@
+        NavigationManager.NavigateTo("counter");
+    }
+}

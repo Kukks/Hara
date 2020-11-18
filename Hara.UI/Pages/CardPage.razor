@@ -1,0 +1,73 @@
+﻿@* CardPage.razor *@
+@inject IJSRuntime JSRuntime
+@page "/card"
+
+<div class="ion-page" id="main-content">
+    <ion-header>
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>Cards</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+        <ion-item>
+            <ion-label position="floating">Title</ion-label>
+            @* Binding to Title *@
+            <ion-input @bind-value="@Title" @bind-value:event="oninput"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label position="floating">Description</ion-label>
+            @* Binding to Content *@
+            <ion-textarea @bind-value="@Content" @bind-value:event="oninput"></ion-textarea>
+        </ion-item>
+
+        <ion-button color="primary" @onclick="AddCard" shape="round">Add Card</ion-button>
+
+        <div>
+            <ion-item>
+                <ion-label>Total Cards</ion-label>
+                @* Showing total number of cards *@
+                <ion-badge slot="end">@cards.Count</ion-badge>
+            </ion-item>
+
+            @foreach (var card in cards)
+            {
+                <ion-card>
+                    <ion-card-header>
+                        <ion-card-title>@card.Title</ion-card-title>
+                    </ion-card-header>
+
+                    <ion-card-content>
+                        @card.Content
+                    </ion-card-content>
+                </ion-card>
+            }
+        </div>
+    </ion-content>
+</div>
+
+@code {
+    private List<Card> cards = new List<Card>();
+    private string Title;
+    private string Content;
+
+
+    private async Task AddCard()
+    {
+        if (!string.IsNullOrEmpty(Title))
+        {
+            if (cards.Any(x => x.Title == Title))
+            {
+                @* If Title already exists, show a message *@
+                await JSRuntime.InvokeVoidAsync("showIonAlert");
+                return;
+            }
+            cards.Add(new Card { Title = Title, Content = Content });
+            Title = string.Empty;
+            Content = string.Empty;
+        }
+    }
+}
