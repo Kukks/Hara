@@ -14,9 +14,9 @@ namespace Hara.WebCommon
             _jsRuntime = jsRuntime;
         }
 
-        public async Task<T> Get<T>(string key)
+        public virtual async Task<T> Get<T>(string key)
         {
-            var lsRes = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", key);
+            var lsRes = await GetRaw(key);
 
             if (lsRes is null)
             {
@@ -26,7 +26,12 @@ namespace Hara.WebCommon
             return JsonSerializer.Deserialize<T>(lsRes);
         }
 
-        public async Task Set<T>(string key, T value)
+        protected async Task<string> GetRaw(string key)
+        {
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", key);
+        }
+
+        public virtual async Task Set<T>(string key, T value)
         {
             if (value.Equals(default(T)))
             {
@@ -34,8 +39,13 @@ namespace Hara.WebCommon
             }
             else
             {
-                await _jsRuntime.InvokeVoidAsync("localStorage.setItem", key, JsonSerializer.Serialize(value));
+                await SetRaw(key, JsonSerializer.Serialize(value));
             }
+        }
+        
+        protected async Task SetRaw(string key, string value)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
         }
     }
 }

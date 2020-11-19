@@ -4,6 +4,7 @@ using Blazor.Extensions;
 using Hara.Abstractions;
 using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
+using Hara.Server.Services;
 using Hara.WebCommon;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,10 +35,12 @@ namespace Hara.Server
             services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
             services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
             services.AddScoped<IConfigProvider, JsInteropConfigProvider>();
+            services.AddScoped<ISecureConfigProvider, JsInteropSecureConfigProvider>();
             services.AddSingleton(provider =>
                 provider.GetService<IWebHostEnvironment>().WebRootFileProvider);
             
             services.AddScoped<INotificationManager, WebNotificationManager>();
+            services.AddDataProtection();
             services.AddNotifications();
         }
 

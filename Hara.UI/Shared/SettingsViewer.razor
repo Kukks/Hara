@@ -1,5 +1,6 @@
 @using Hara.Abstractions.Contracts
-@inject IConfigProvider ConfigProvider
+@inject IConfigProvider _configProvider
+@inject ISecureConfigProvider _secureConfigProvider
 
 @if (loading)
 {
@@ -32,9 +33,24 @@
 
 @code {
 
+    IConfigProvider ConfigProvider
+    {
+        get
+        {
+            if (Encrypted)
+            {
+                return _secureConfigProvider ?? _configProvider;
+            }
+            return _configProvider;
+        }
+    }
+
     private bool loading = true;
     private string newKey = "";
     private string newValue = "";
+
+    [Parameter]
+    public  bool Encrypted { get; set; }
 
     private Dictionary<string, string> Items { get; set; } = new Dictionary<string, string>();
 

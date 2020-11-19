@@ -31,6 +31,7 @@ namespace Hara.XamarinCommon
                     services.AddSingleton<IWebsiteLauncher, XamarinEssentialsWebsiteLauncher>();
                     services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
                     services.AddSingleton<IConfigProvider, XamarinEssentialsConfigProvider>();
+                    services.AddSingleton<ISecureConfigProvider, XamarinEssentialsSecureConfigProvider>();
                     configureDI?.Invoke(services);
                 })
                 .UseWebRoot("wwwroot");
