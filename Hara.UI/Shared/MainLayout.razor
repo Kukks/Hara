@@ -23,15 +23,15 @@
                             Home
                         </ion-label>
                     </ion-item>
-                    <ion-item @onclick='() => NavigationManager.NavigateTo("counter")'>
+                    <ion-item button @onclick='() => NavigationManager.NavigateTo("counter")'>
                         <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                        <ion-label>Add Card</ion-label>
+                        <ion-label>Counter</ion-label>
                     </ion-item>
-                    <ion-item @onclick='() =>NavigationManager.NavigateTo("cards")'>
+                    <ion-item button @onclick='() =>NavigationManager.NavigateTo("cards")'>
                         <ion-icon name="add-circle-outline" slot="start"></ion-icon>
                         <ion-label>Cards</ion-label>
                     </ion-item>
-                    <ion-item @onclick='() =>NavigationManager.NavigateTo("fetchdata")'>
+                    <ion-item button @onclick='() =>NavigationManager.NavigateTo("fetchdata")'>
                         <ion-icon name="add-circle-outline" slot="start"></ion-icon>
                         <ion-label>Weather Forecast</ion-label>
                     </ion-item>

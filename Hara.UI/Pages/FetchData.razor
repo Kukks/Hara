@@ -1,48 +1,76 @@
 @page "/fetchdata"
-@using Hara.Abstractions
 @using Hara.Abstractions.Contracts
 @using Hara.UI.Services
 @inject UIStateService UiStateService
 @inject IWeatherForecastFetcher WeatherForecastFetcher
+@inject IJSRuntime JsRuntime    
 
 <p>This component demonstrates fetching data from the server.</p>
 
 @if (_forecasts == null)
 {
-    <p><em>Loading...</em></p>
+    <ion-loading animated="true" backdrop-dismiss="false" message="Loading the weather" @ref="loadingElement"></ion-loading>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in _forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <div>Date</div>
+            </ion-col>
+            <ion-col>
+                <div>Temp. (C)</div>
+            </ion-col>
+            <ion-col>
+                <div>Temp. (F)</div>
+            </ion-col>
+            <ion-col>
+                <div>Summary</div>
+            </ion-col>
+
+        </ion-row>
+        @foreach (var forecast in _forecasts)
+        {
+            <ion-row>
+                <ion-col>
+                    <div>@forecast.Date.ToShortDateString()</div>
+                </ion-col>
+                <ion-col>
+                    <div>@forecast.TemperatureC</div>
+                </ion-col>
+                <ion-col>
+                    <div>@forecast.TemperatureF</div>
+                </ion-col>
+                <ion-col>
+                    <div>@forecast.Summary</div>
+                </ion-col>
+            </ion-row>
+        }
+    </ion-grid>
 }
 
 @code {
     private IEnumerable<WeatherForecast> _forecasts;
+    ElementReference loadingElement;
+    protected override void OnInitialized()
+    {
+        UiStateService.PageTitle = "Weather forecast";
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!string.IsNullOrEmpty(loadingElement.Id) && firstRender)
+        {
+            JsRuntime.InvokeVoidAsync("IonicBridge.present", loadingElement);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        UiStateService.PageTitle = "Weather forecast";
-        _forecasts = await WeatherForecastFetcher.Fetch();
+        var result = await WeatherForecastFetcher.Fetch();
+        await Task.Delay(5000);
+        _forecasts = result;
     }
 
 }
