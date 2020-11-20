@@ -7,14 +7,13 @@ namespace Hara.XamarinCommon.Services
 {
     public class XamarinEssentialsSecureConfigProvider : ISecureConfigProvider
     {
-        public Task<T> Get<T>(string key)
+        public async Task<T> Get<T>(string key)
         {
-            return Task.FromResult(SecureStorage.ContainsKey(key)
-                ? JsonSerializer.Deserialize<T>(SecureStorage.Get(key, ""))
-                : default);
+            var raw = await SecureStorage.GetAsync(key);
+            return string.IsNullOrEmpty(raw) ? default : JsonSerializer.Deserialize<T>(raw);
         }
 
-        public Task Set<T>(string key, T value)
+        public async Task Set<T>(string key, T value)
         {
             if (value.Equals(default(T)))
             {
@@ -22,11 +21,8 @@ namespace Hara.XamarinCommon.Services
             }
             else
             {
-                SecureStorage.Set(key, JsonSerializer.Serialize(value));
+                await SecureStorage.SetAsync(key, JsonSerializer.Serialize(value));
             }
-
-            return Task.CompletedTask;
-            ;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Hara.WASM
             builder.Services.AddSingleton<IWebsiteLauncher, JsInteropWebsiteLauncher>();
             builder.Services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
             builder.Services.AddSingleton<IConfigProvider, JsInteropConfigProvider>();
+            builder.Services.AddSingleton<ISecureConfigProvider, StubWASMJsInteropSecureConfigProvider>();
             builder.Services.AddScoped<INotificationManager, WebNotificationManager>();
 
             builder.Services.AddSingleton(
