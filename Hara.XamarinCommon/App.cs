@@ -2,6 +2,7 @@
 using Hara.Abstractions;
 using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
+using Hara.UI.Services;
 using Hara.XamarinCommon.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -25,6 +26,7 @@ namespace Hara.XamarinCommon
                     // Adds web-specific services such as NavigationManager
                     services.AddBlazorHybrid();
 
+                    services.AddUIServices();
                     // Register app-specific services
                     services.AddSingleton<ICounterState, CounterState>();
                     services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();

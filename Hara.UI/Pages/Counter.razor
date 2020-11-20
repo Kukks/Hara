@@ -1,10 +1,9 @@
 ﻿@page "/counter"
 @inject ICounterState CounterState
-@using Hara.Abstractions
+@inject UIStateService UiStateService
 @using Hara.Abstractions.Contracts
+@using Hara.UI.Services
 @implements IDisposable
-
-<h1>Counter</h1>
 
 <p>Current:ss @CounterState.CurrentCount</p>
 
@@ -13,6 +12,8 @@
 @code {
     protected override void OnInitialized()
     {
+       
+        UiStateService.PageTitle = "Counter";
         CounterState.StateChanged += StateHasChanged;
     }
 

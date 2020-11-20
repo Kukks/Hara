@@ -1,6 +1,7 @@
 ﻿@page "/"
-<h1>Hello, world!</h1>
+@using Hara.UI.Services
 
+@inject UIStateService UiStateService
 Welcome to your new app.
 <hr/>
 <SurveyPrompt Title="How is Blazor working for you?" />
@@ -14,3 +15,14 @@ Welcome to your new app.
 <NotificationsTest></NotificationsTest>
 <hr/>
 <a href="https://webauthn.io/">Testing!</a>
+
+@code{
+
+
+    protected override void OnInitialized()
+    {
+        UiStateService.PageTitle = "Hello World!";
+        base.OnInitialized();
+    }
+
+}

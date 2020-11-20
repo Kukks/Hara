@@ -1,9 +1,9 @@
 @page "/fetchdata"
 @using Hara.Abstractions
 @using Hara.Abstractions.Contracts
+@using Hara.UI.Services
+@inject UIStateService UiStateService
 @inject IWeatherForecastFetcher WeatherForecastFetcher
-
-<h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
@@ -41,6 +41,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        UiStateService.PageTitle = "Weather forecast";
         _forecasts = await WeatherForecastFetcher.Fetch();
     }
 

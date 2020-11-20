@@ -18,4 +18,19 @@
       <ProjectReference Include="..\Hara.Abstractions\Hara.Abstractions.csproj" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\blazor-errors.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\vendors\ionic\ionic.bundle.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\vendors\ionic\ionic.esm.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\vendors\ionic\ionic.js" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <TypeScriptCompile Include="wwwroot\ionic\swiper\swiper-interface.d.ts" />
+    </ItemGroup>
+
 </Project>

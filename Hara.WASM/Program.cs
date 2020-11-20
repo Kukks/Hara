@@ -5,6 +5,7 @@ using Blazor.Extensions;
 using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
 using Hara.UI;
+using Hara.UI.Services;
 using Hara.WASM.Services;
 using Hara.WebCommon;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -19,6 +20,7 @@ namespace Hara.WASM
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("ion-app");
 
+            builder.Services.AddUIServices();
             builder.Services.AddSingleton<ICounterState, CounterState>();
             builder.Services.AddSingleton<ILocalContentFetcher, HttpClientLocalContentFetcher>();
             builder.Services.AddSingleton<IWebsiteLauncher, JsInteropWebsiteLauncher>();

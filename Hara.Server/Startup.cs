@@ -5,6 +5,7 @@ using Hara.Abstractions;
 using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
 using Hara.Server.Services;
+using Hara.UI.Services;
 using Hara.WebCommon;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace Hara.Server
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddUIServices();
             services.AddSingleton<ICounterState, CounterState>();
             services.AddScoped<IWebsiteLauncher, JsInteropWebsiteLauncher>();
             services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();

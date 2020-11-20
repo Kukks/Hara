@@ -1,31 +1,54 @@
-﻿@*//MainLayour.razor *@
+﻿@using Hara.UI.Services
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject UIStateService UiStateService
 
-<ion-menu side="start" content-id="main-content">
-    <ion-header>
-        <ion-toolbar translucent>
-            <ion-title>Menu</ion-title>
-        </ion-toolbar>
-    </ion-header>
-    <ion-content>
-        <ion-list>
-            @*// Handling onclick *@
-            <ion-item @onclick="NavigateToComponent">
-                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                <ion-label>Add Card</ion-label>
-            </ion-item>
-        </ion-list>
-    </ion-content>
-</ion-menu>
+<ion-split-pane when="sm" content-id="main-content">
+    <ion-menu content-id="main-content">
+        <ion-header>
+            <ion-toolbar color="primary">
+                <ion-title>Menu</ion-title>
+            </ion-toolbar>
+        </ion-header>
 
-@*// Placeholder where all the pages will be rendered *@
-@Body
+        <ion-content>
+            <ion-list>
+                <ion-list-header>
+                    Navigate
+                </ion-list-header>
+                <ion-menu-toggle auto-hide="false">
+                    <ion-item button>
+                        <ion-icon slot="start" name='home'  @onclick='() => NavigationManager.NavigateTo("")' ></ion-icon>
+                        <ion-label>
+                            Home
+                        </ion-label>
+                    </ion-item>
+                    <ion-item @onclick='() => NavigationManager.NavigateTo("counter")'>
+                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                        <ion-label>Add Card</ion-label>
+                    </ion-item>
+                    <ion-item @onclick='() =>NavigationManager.NavigateTo("cards")'>
+                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                        <ion-label>Cards</ion-label>
+                    </ion-item>
+                    <ion-item @onclick='() =>NavigationManager.NavigateTo("fetchdata")'>
+                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                        <ion-label>Weather Forecast</ion-label>
+                    </ion-item>
+                </ion-menu-toggle>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
 
-@code {
-    private void NavigateToComponent()
-    {
-        @*// Going to our new page *@
-        NavigationManager.NavigateTo("counter");
-    }
-}
+    <div class="ion-page" id="main-content">
+        <ion-header>
+            <ion-toolbar>
+                <ion-buttons slot="start">
+                    <ion-menu-button></ion-menu-button>
+                </ion-buttons>
+                <ion-title>@UiStateService.PageTitle</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        @Body
+    </div>
+</ion-split-pane>
