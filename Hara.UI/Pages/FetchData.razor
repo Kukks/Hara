@@ -1,17 +1,16 @@
 @page "/fetchdata"
 @using Hara.Abstractions.Contracts
 @using Hara.UI.Services
+@using System.Diagnostics
 @inject UIStateService UiStateService
 @inject IWeatherForecastFetcher WeatherForecastFetcher
 @inject IJSRuntime JsRuntime    
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (_forecasts == null)
-{
-    <ion-loading animated="true" backdrop-dismiss="false" message="Loading the weather" @ref="loadingElement"></ion-loading>
-}
-else
+<IonicLoader Visible="@Loading" message="eeee" Dismissed="Hello"></IonicLoader>
+
+@if (_forecasts != null)
 {
     <ion-grid>
         <ion-row>
@@ -50,21 +49,20 @@ else
 }
 
 @code {
+
+    private bool Loading => _forecasts == null;
+    public async Task Hello()
+    {
+        Debug.Write("haha");
+    }
+
     private IEnumerable<WeatherForecast> _forecasts;
-    ElementReference loadingElement;
     protected override void OnInitialized()
     {
         UiStateService.PageTitle = "Weather forecast";
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (!string.IsNullOrEmpty(loadingElement.Id) && firstRender)
-        {
-            JsRuntime.InvokeVoidAsync("IonicBridge.present", loadingElement);
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {

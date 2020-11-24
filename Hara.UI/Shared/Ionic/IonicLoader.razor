@@ -1,0 +1,89 @@
+@inject IJSRuntime JsRuntime
+
+<h1>@_visible @_realVisible</h1>
+@if (_visible)
+{
+    <ion-loading @attributes="InputAttributes" @ref="LoadingElement"></ion-loading>
+}
+@code {
+    private DotNetObjectReference<IonicLoader> _thisRef;
+
+    private ElementReference LoadingElement { get; set; }
+    private bool _realVisible;
+    private bool _visible;
+    private readonly Queue<Func<Task>> _renderActions = new Queue<Func<Task>>();
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; }
+    
+    [Parameter]
+    public EventCallback Dismissed { get; set; }
+    [Parameter]
+    public EventCallback Presented { get; set; }
+
+    [Parameter]
+    public bool Visible
+    {
+        get => _visible;
+        set
+        {
+            if (_realVisible != value)
+            {
+                _renderActions.Enqueue(async () =>
+                {
+                    if (value && !_realVisible)
+                    {
+                        
+                        await  RegisterEventHandlers();
+                    }
+                    await JsRuntime.InvokeVoidAsync("executeFunctionByName", LoadingElement, value ? "present" : "dismiss");
+                    
+                });
+            }
+            _visible = value;
+        }
+    }
+
+    [JSInvokable(nameof(HandleDismissed))]
+    public async Task HandleDismissed()
+    {
+        _realVisible = false;
+        _visible = false;
+        await Dismissed.InvokeAsync(null);
+        StateHasChanged();
+    }
+
+    protected override bool ShouldRender()
+    {
+        return base.ShouldRender() || (_visible && !_realVisible);
+    }
+
+    [JSInvokable(nameof(HandlePresented))]
+    public async Task HandlePresented()
+    {
+        _realVisible = true;
+        _visible = true;
+        await Presented.InvokeAsync(null);
+        StateHasChanged();
+    }
+
+    private async Task RegisterEventHandlers()
+    {
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", LoadingElement, "ionLoadingDidDismiss", _thisRef, nameof(HandleDismissed));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", LoadingElement, "ionLoadingDidPresent", _thisRef, nameof(HandlePresented));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _thisRef = DotNetObjectReference.Create(this);
+        }
+        while (_renderActions.Any())
+        {
+            await _renderActions.Dequeue().Invoke();
+        }
+        await  base.OnAfterRenderAsync(firstRender);
+    }
+
+}

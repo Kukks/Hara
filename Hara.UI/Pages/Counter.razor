@@ -5,14 +5,24 @@
 @using Hara.UI.Services
 @implements IDisposable
 
-<p>Current:ss @CounterState.CurrentCount</p>
 
-<button class="btn btn-primary" @onclick="CounterState.IncrementCount">Click me</button>
+<section>
+    
+<p>Current Counter: @CounterState.CurrentCount</p>
+    <ion-button @onclick="CounterState.IncrementCount" expand="block">Increase Counter</ion-button>
+</section>
+<section>
+    <ion-button @onclick="() => VisibleLoader = !VisibleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
+</section>
+
+<IonicLoader Visible="@VisibleLoader" message="eeee" Dismissed="@OnLoaderDismissed" duration="2000"></IonicLoader>
 
 @code {
+
+    public bool VisibleLoader { get; set; }
+
     protected override void OnInitialized()
     {
-       
         UiStateService.PageTitle = "Counter";
         CounterState.StateChanged += StateHasChanged;
     }
@@ -21,4 +31,10 @@
     {
         CounterState.StateChanged -= StateHasChanged;
     }
+
+    public void OnLoaderDismissed()
+    {
+        VisibleLoader = false;
+    }
+
 }
