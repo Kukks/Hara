@@ -58,7 +58,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LiveSharp" Version="1.6.31" />
+    <PackageReference Include="LiveSharp" Version="1.6.33" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.8" />
     <PackageReference Include="Microsoft.MobileBlazorBindings.WebView.Android" Version="0.5.50-preview" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.7.1" />
