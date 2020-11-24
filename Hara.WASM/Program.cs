@@ -18,7 +18,7 @@ namespace Hara.WASM
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("ion-app");
+            builder.RootComponents.Add<App>("app");
 
             builder.Services.AddUIServices();
             builder.Services.AddSingleton<ICounterState, CounterState>();
