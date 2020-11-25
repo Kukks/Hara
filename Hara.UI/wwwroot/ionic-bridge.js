@@ -1,10 +1,32 @@
-function executeFunctionByName(ns, name)
-{
-    if(typeof ns === "string"){
-        ns = document.querySelector(ns);
+function createElement(tag, id, attrs, data) {
+    const el = document.createElement(tag);
+    attrs = attrs || {};
+    data = data || {};
+    el.setAttribute("id", id);
+    for (const attr in attrs) {
+        el.setAttribute(attr, attrs[attr]);
+    }
+    for (const k in data) {
+        el[k] = data[k];
+    }
+    document.body.appendChild(el);
+}
+
+function removeElement(el) {
+    if (typeof el === "string") {
+        el = document.getElementById(el);
+    }
+    if (el) {
+        el.remove();
+    }
+}
+
+function executeFunctionByName(ns, name) {
+    if (typeof ns === "string") {
+        ns = document.getElementById(ns);
     }
     var args = Array.prototype.slice.call(arguments).splice(2);
-    if(!ns || !ns[name]){
+    if (!ns || !ns[name]) {
         console.error(`"Blazor attempted to call ${ns}.${name}(${args.join(', ')})`)
         return;
     }
@@ -12,6 +34,10 @@ function executeFunctionByName(ns, name)
 }
 
 function registerBlazorCustomHandler(component, eventName, callbackClass, callBackMethodName) {
+    if (typeof component === "string") {
+        component = document.getElementById(component);
+    }
+    
     component.addEventListener(eventName, (e) => {
         callbackClass.invokeMethodAsync(callBackMethodName, e.detail);
     });

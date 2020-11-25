@@ -12,10 +12,10 @@
     <ion-button @onclick="CounterState.IncrementCount" expand="block">Increase Counter</ion-button>
 </section>
 <section>
-    <ion-button @onclick="() => VisibleLoader = !VisibleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
+    <ion-button @onclick="ToggleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
 </section>
 
-<IonicLoader Visible="@VisibleLoader" message="eeee" Dismissed="@OnLoaderDismissed" duration="2000"></IonicLoader>
+<IonicLoader @bind-visible="@VisibleLoader" message="eeee" backdrop-dismiss="true"></IonicLoader>
 
 @code {
 
@@ -35,6 +35,22 @@
     public void OnLoaderDismissed()
     {
         VisibleLoader = false;
+    }
+
+    public void VisibleChanged(bool visible)
+    {
+        VisibleLoader = visible;
+    }
+
+    private void ToggleLoader()
+    {
+        VisibleLoader = !VisibleLoader;
+        Task.Run(async () =>
+        {
+            await Task.Delay(5000);
+            VisibleLoader = false;
+            await InvokeAsync(StateHasChanged);
+        });
     }
 
 }
