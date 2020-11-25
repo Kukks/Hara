@@ -1,6 +1,6 @@
 @inject IJSRuntime JsRuntime
 @code {
-    private DotNetObjectReference<IonicLoader> _thisRef;
+    private DotNetObjectReference<IonLoading> _thisRef;
     private bool _realVisible;
     private bool _visible;
     private readonly Queue<Func<Task>> _renderActions = new Queue<Func<Task>>();
