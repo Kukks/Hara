@@ -1,3 +1,36 @@
+function getParentTargetProp(parent, propertyName) {
+    if (typeof parent === "string" && parent !== "window") {
+        parent = document.getElementById(parent);
+    } else if (typeof parent === "string" && parent === "window") {
+        parent = window;
+    }
+    propertyName = propertyName || "";
+    const parts = propertyName.split('.');
+    let target = parent;
+    if (parts.length > 1) {
+        for (let part of parts) {
+            let didComplex = false;
+            while(part.indexOf('[') > -1){
+                const startBracket = part.indexOf('[');
+                const endBracket = part.indexOf(']');
+                const smallerPart = part.substr(0, startBracket);
+                const bracketValue = part.substr(startBracket+1, endBracket-startBracket-1 );
+                parent = target[smallerPart];
+                target = parent[bracketValue];
+                didComplex = true;
+                part = part.substr(endBracket+1);
+            }
+            if(!didComplex){
+                parent = target;
+                target = target[part] || part;
+            }            
+        }
+    }else{
+        target = parent[propertyName];
+    }
+    return {parent, target};
+}
+
 function createElement(tag, id, attrs, data) {
     const el = document.createElement(tag);
     attrs = attrs || {};
@@ -12,37 +45,42 @@ function createElement(tag, id, attrs, data) {
     document.body.appendChild(el);
 }
 
-function removeElement(el) {
-    if (typeof el === "string") {
-        el = document.getElementById(el);
-    }
-    if (el) {
-        el.remove();
-    }
-}
+function executeFunctionByName(obj, name) {
+    const args = Array.prototype.slice.call(arguments).splice(2);
+    const target = getParentTargetProp(obj, name);
 
-function executeFunctionByName(ns, name) {
-    if (typeof ns === "string") {
-        ns = document.getElementById(ns);
-    }
-    var args = Array.prototype.slice.call(arguments).splice(2);
-    if (!ns || !ns[name]) {
-        console.error(`"Blazor attempted to call ${ns}.${name}(${args.join(', ')})`)
+    if (!target.parent || !target.target || typeof target.target !== "function") {
+        console.error(`"Blazor attempted to call ${obj}.${name}(${args.join(', ')})`)
         return;
     }
-    return ns[name].apply(ns, args);
+    return target.target.apply(target.parent, args);
 }
 
 function registerBlazorCustomHandler(component, eventName, callbackClass, callBackMethodName) {
-    if (typeof component === "string") {
-        component = document.getElementById(component);
-    }
-    
-    component.addEventListener(eventName, (e) => {
+    executeFunctionByName(component, "addEventListener", eventName, (e) => {
         callbackClass.invokeMethodAsync(callBackMethodName, e.detail);
     });
 }
 
-function setWebComponentProperty(webComp, propertyName, value) {
-    webComp[propertyName] = value;
+function setWebComponentProperty(obj, name, value) {
+    const target = getParentTargetProp(obj, name);
+    if (target.parent && target.target) {
+        target.parent[target.target] = value;
+    }
+}
+
+function setWebComponentPropertyWithCallback(webComp, propertyName, callbackClass, callBackMethodName, id) {
+    setWebComponentProperty(webComp, propertyName, function () {        
+        return callbackClass.invokeMethodAsync(callBackMethodName, arguments, id);
+    });
+}
+
+
+function executeFunctionByNameWithPromise(webComp, propertyName, callbackClass, callBackMethodName, callBackMethodErrorName) {
+    Promise.resolve(executeFunctionByName(webComp, propertyName, Array.prototype.slice.call(arguments).splice(4)))
+        .then(function () {
+            return callbackClass.invokeMethodAsync(callBackMethodName, arguments);
+        }).catch(function () {
+        return callbackClass.invokeMethodAsync(callBackMethodName, arguments);
+    });
 }

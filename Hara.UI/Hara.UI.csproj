@@ -33,4 +33,9 @@
       <TypeScriptCompile Include="wwwroot\ionic\swiper\swiper-interface.d.ts" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Folder Include="JsonConverter" />
+    </ItemGroup>
+
 </Project>

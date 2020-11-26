@@ -7,50 +7,121 @@
 
 
 <section>
-    
-<p>Current Counter: @CounterState.CurrentCount</p>
+
+    <p>Current Counter: @CounterState.CurrentCount</p>
     <ion-button @onclick="CounterState.IncrementCount" expand="block">Increase Counter</ion-button>
-</section>
-<section>
+
     <ion-button @onclick="ToggleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
+    <ion-button @onclick="ToggleAlert" expand="block">Toggle alert (currently @VisibleAlert)</ion-button>
+    <ion-list>
+        @foreach (var log in Logs)
+        {
+            <ion-item>
+                <ion-label>
+                    @log
+                </ion-label>
+            </ion-item>
+        }
+    </ion-list>
 </section>
 
-<IonLoading @bind-visible="@VisibleLoader" message="eeee" backdrop-dismiss="true"></IonLoading>
+<IonLoading @bind-Visible="@VisibleLoader" message="eeee" backdrop-dismiss="true"></IonLoading>
+<IonAlert @bind-Visible="@VisibleAlert" message="eeee" buttons="@buttons" inputs="@inputs" backdrop-dismiss="true"></IonAlert>
 
 @code {
 
-    public bool VisibleLoader { get; set; }
+    public IonAlert.IonAlertButton[] buttons;
+    public IonAlert.IonAlertInput[] inputs;
+    public List<string> Logs = new List<string>();
+    private bool _visibleAlert;
+    private bool _visibleLoader;
+
+    public bool VisibleLoader
+    {
+        get => _visibleLoader;
+        set
+        {
+            Logs.Add($"VisibleLoaderChanged {value}");
+            _visibleLoader = value;
+        }
+    }
+
+    public bool VisibleAlert
+    {
+        get => _visibleAlert;
+        set
+        {
+            Logs.Add($"VisibleAlertChanged {value}");
+            _visibleAlert = value;
+        }
+    }
 
     protected override void OnInitialized()
     {
-        UiStateService.PageTitle = "Counter";
+        UiStateService.StateChanged += StateHasChanged;
         CounterState.StateChanged += StateHasChanged;
+        UiStateService.PageTitle = "Counter";
+        buttons = new[]
+        {
+            new IonAlert.IonAlertButton()
+            {
+                Options = new Dictionary<string, object>()
+                {
+                    {"text", "a button!"}
+                },
+                Handler = o =>
+                {
+                    var vals = string.Join(",", o.Options.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+                    Logs.Add($"1st option clicked! {(vals)}" );
+                    return Task.CompletedTask;
+                }
+            },
+            new IonAlert.IonAlertButton()
+            {
+                Options = new Dictionary<string, object>()
+                {
+                    {"text", "Cancel"},
+                    {"role", "cancel"}
+                },
+                Handler = o =>
+                {
+                    var vals = string.Join(",", o.Options.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+                    Logs.Add($"cancel clicked! {vals}" );
+                    return Task.CompletedTask;
+                }
+            }
+        };
+        inputs = new[]
+        {
+            new IonAlert.IonAlertInput()
+            {
+                Options = new Dictionary<string, object>()
+                {
+                    {"type", "text"},
+                    {"label", "Please tell us about yourself"},
+                    {"placeholder", "14/f/cali"},
+                    {"name", "personalDescription"},
+                    {"id", "alert-personalDescription"}
+                }
+            }
+        };
+        StateHasChanged();
     }
 
     public void Dispose()
     {
         CounterState.StateChanged -= StateHasChanged;
-    }
-
-    public void OnLoaderDismissed()
-    {
-        VisibleLoader = false;
-    }
-
-    public void VisibleChanged(bool visible)
-    {
-        VisibleLoader = visible;
+        UiStateService.StateChanged -= StateHasChanged;
     }
 
     private void ToggleLoader()
     {
         VisibleLoader = !VisibleLoader;
-        Task.Run(async () =>
-        {
-            await Task.Delay(5000);
-            VisibleLoader = false;
-            await InvokeAsync(StateHasChanged);
-        });
+    }
+
+    private void ToggleAlert()
+    {
+        VisibleAlert = !VisibleAlert;
     }
 
 }

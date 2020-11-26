@@ -1,6 +1,6 @@
 @inject IJSRuntime JsRuntime
 @code {
-    private DotNetObjectReference<IonLoading> _thisRef;
+    protected DotNetObjectReference<IonLoading> _thisRef;
     private bool _realVisible;
     private bool _visible;
     private readonly Queue<Func<Task>> _renderActions = new Queue<Func<Task>>();
@@ -13,7 +13,8 @@
     [Parameter]
     public EventCallback Presented { get; set; }
 
-    private string Id;
+    protected string Id;
+    
 
     [Parameter]
     public bool Visible
@@ -28,8 +29,7 @@
                     Id = Guid.NewGuid().ToString();
                     _renderActions.Enqueue(async () =>
                     {
-                        await JsRuntime.InvokeVoidAsync("createElement", "ion-loading", Id, InputAttributes);
-                        await RegisterEventHandlers();
+                        await CreateElement();
                     });
                 }
                 
@@ -45,23 +45,24 @@
     public EventCallback<bool> VisibleChanged { get; set; }
 
     [JSInvokable(nameof(HandleDismissed))]
-    public async Task HandleDismissed()
+    public virtual async Task HandleDismissed(object data)
     {
         _realVisible = false;
-        await Dismissed.InvokeAsync(null);
+        await Dismissed.InvokeAsync(data);
         await VisibleChanged.InvokeAsync(_realVisible);
     }
 
     [JSInvokable(nameof(HandlePresented))]
-    public async Task HandlePresented()
+    public virtual async Task HandlePresented(object data)
     {
         _realVisible = true;
-        await Presented.InvokeAsync(null);
+        await Presented.InvokeAsync(data);
         await VisibleChanged.InvokeAsync(_realVisible);
     }
 
-    private async Task RegisterEventHandlers()
+    protected virtual async Task CreateElement()
     {
+        await JsRuntime.InvokeVoidAsync("createElement", "ion-loading", Id, InputAttributes);
         await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidDismiss", _thisRef, nameof(HandleDismissed));
         await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidPresent", _thisRef, nameof(HandlePresented));
     }
