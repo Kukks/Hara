@@ -84,3 +84,11 @@ function executeFunctionByNameWithPromise(webComp, propertyName, callbackClass, 
         return callbackClass.invokeMethodAsync(callBackMethodName, arguments);
     });
 }
+
+function removeremove(obj, parentElement) {
+    if(obj) {
+        obj.remove = () => {
+            parentElement.appendChild(obj);
+        };
+    }
+}

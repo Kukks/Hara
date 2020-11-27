@@ -1,0 +1,46 @@
+@inject IJSRuntime JsRuntime
+@using System.Text.Json.Serialization
+@using System.Text.Json
+@inherits IonLoading
+<div style="display: none" @ref="modalContainer">
+    <div @ref="modalContent">@ChildContent</div>
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    ElementReference modalContent;
+    ElementReference modalContainer;
+
+    protected override async Task CreateElement()
+    {
+        await JsRuntime.InvokeVoidAsync("removeremove", modalContent, modalContainer);
+        var data = new Dictionary<string, object>()
+        {
+            {"component", modalContent}
+        };
+        await JsRuntime.InvokeVoidAsync("createElement", "ion-modal", Id, InputAttributes, data);
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidDismiss", _thisRef, nameof(HandleDismissed));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidPresent", _thisRef, nameof(HandlePresented));
+    }
+
+    [JSInvokable(nameof(HandlePresented))]
+    public override Task HandlePresented(object data)
+    {
+        return base.HandlePresented(ParseData(data));
+    }
+
+    [JSInvokable(nameof(HandleDismissed))]
+    public override Task HandleDismissed(object data)
+    {
+        return base.HandleDismissed(ParseData(data));
+    }
+
+    private object ParseData(object obj)
+    {
+        return obj;
+    }
+
+}

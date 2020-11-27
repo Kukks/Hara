@@ -5,14 +5,13 @@
 @using Hara.UI.Services
 @implements IDisposable
 
-
 <section>
-
     <p>Current Counter: @CounterState.CurrentCount</p>
     <ion-button @onclick="CounterState.IncrementCount" expand="block">Increase Counter</ion-button>
 
     <ion-button @onclick="ToggleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
     <ion-button @onclick="ToggleAlert" expand="block">Toggle alert (currently @VisibleAlert)</ion-button>
+    <ion-button @onclick="ToggleModal" expand="block">Toggle modal (currently @VisibleModal)</ion-button>
     <ion-list>
         @foreach (var log in Logs)
         {
@@ -24,7 +23,24 @@
         }
     </ion-list>
 </section>
-
+<IonModal @bind-Visible="@VisibleModal">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Modal Header</ion-title>
+        <ion-buttons slot="primary">
+          <ion-button @onclick="ToggleModal">
+            <ion-icon slot="icon-only" name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+        Modal Content
+        
+    <p>Current Counter: @CounterState.CurrentCount</p>
+    <ion-button @onclick="CounterState.IncrementCount" expand="block">Increase Counter</ion-button>
+    </ion-content>
+</IonModal>
 <IonLoading @bind-Visible="@VisibleLoader" message="eeee" backdrop-dismiss="true"></IonLoading>
 <IonAlert @bind-Visible="@VisibleAlert" message="eeee" buttons="@buttons" inputs="@inputs" backdrop-dismiss="true"></IonAlert>
 
@@ -34,6 +50,7 @@
     public IonAlert.IonAlertInput[] inputs;
     public List<string> Logs = new List<string>();
     private bool _visibleAlert;
+    private bool _visibleModal;
     private bool _visibleLoader;
 
     public bool VisibleLoader
@@ -53,6 +70,16 @@
         {
             Logs.Add($"VisibleAlertChanged {value}");
             _visibleAlert = value;
+        }
+    }
+
+    public bool VisibleModal
+    {
+        get => _visibleModal;
+        set
+        {
+            Logs.Add($"VisibleModalChanged {value}");
+            _visibleModal = value;
         }
     }
 
@@ -122,6 +149,11 @@
     private void ToggleAlert()
     {
         VisibleAlert = !VisibleAlert;
+    }
+
+    private void ToggleModal()
+    {
+        VisibleModal = !VisibleModal;
     }
 
 }
