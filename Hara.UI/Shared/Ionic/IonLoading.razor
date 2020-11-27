@@ -1,83 +1,14 @@
-@inject IJSRuntime JsRuntime
+@using Hara.UI.Shared.Ionic.Models
+@inherits BaseIonicPresentableComponent<object, Hara.UI.Shared.Ionic.Models.OverlayEventDetail<Hara.UI.Shared.Ionic.Models.IonicComponentDismissPayloadData>>
+
 @code {
-    protected DotNetObjectReference<IonLoading> _thisRef;
-    private bool _realVisible;
-    private bool _visible;
-    private readonly Queue<Func<Task>> _renderActions = new Queue<Func<Task>>();
-    
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> InputAttributes { get; set; }
-    
-    [Parameter]
-    public EventCallback Dismissed { get; set; }
-    [Parameter]
-    public EventCallback Presented { get; set; }
 
-    protected string Id;
-    
-
-    [Parameter]
-    public bool Visible
-    {
-        get => _visible;
-        set
-        {
-            if (_realVisible != value)
-            {
-                if(value)
-                {
-                    Id = Guid.NewGuid().ToString();
-                    _renderActions.Enqueue(async () =>
-                    {
-                        await CreateElement();
-                    });
-                }
-                
-                _renderActions.Enqueue(async () =>
-                {
-                    await JsRuntime.InvokeVoidAsync("executeFunctionByName", Id, value ? "present" : "dismiss");
-                });
-            }
-            _visible = value;
-        }
-    }
-    [Parameter]
-    public EventCallback<bool> VisibleChanged { get; set; }
-
-    [JSInvokable(nameof(HandleDismissed))]
-    public virtual async Task HandleDismissed(object data)
-    {
-        _realVisible = false;
-        await Dismissed.InvokeAsync(data);
-        await VisibleChanged.InvokeAsync(_realVisible);
-    }
-
-    [JSInvokable(nameof(HandlePresented))]
-    public virtual async Task HandlePresented(object data)
-    {
-        _realVisible = true;
-        await Presented.InvokeAsync(data);
-        await VisibleChanged.InvokeAsync(_realVisible);
-    }
-
-    protected virtual async Task CreateElement()
+    protected override async Task CreateElement()
     {
         await JsRuntime.InvokeVoidAsync("createElement", "ion-loading", Id, InputAttributes);
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidDismiss", _thisRef, nameof(HandleDismissed));
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidPresent", _thisRef, nameof(HandlePresented));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidDismiss", ThisRef, nameof(HandleDismissed));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionLoadingDidPresent", ThisRef, nameof(HandlePresented));
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _thisRef = DotNetObjectReference.Create(this);
-        }
-        while (_renderActions.Any())
-        {
-            await _renderActions.Dequeue().Invoke();
-        }
-        await  base.OnAfterRenderAsync(firstRender);
-    }
-
 }

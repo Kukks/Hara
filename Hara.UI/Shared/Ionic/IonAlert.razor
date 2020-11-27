@@ -1,9 +1,12 @@
-@inject IJSRuntime JsRuntime
+@using Hara.UI.Shared.Ionic.Models
 @using System.Text.Json.Serialization
 @using System.Text.Json
-@inherits IonLoading
+@inherits BaseIonicPresentableComponent<object, Hara.UI.Shared.Ionic.Models.OverlayEventDetail<Hara.UI.Shared.Ionic.Models.IonicComponentDismissPayloadData>>
 
 @code {
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; }
 
     [Parameter]
     public IEnumerable<IonAlertButton> Buttons { get; set; }
@@ -29,7 +32,7 @@
             {
                 if (Buttons.ElementAt(i).Handler != null)
                 {
-                    await JsRuntime.InvokeVoidAsync("setWebComponentPropertyWithCallback", Id, $"buttons[{i}].handler", _thisRef, nameof(HandleButton), i);
+                    await JsRuntime.InvokeVoidAsync("setWebComponentPropertyWithCallback", Id, $"buttons[{i}].handler", ThisRef, nameof(HandleButton), i);
                 }
             }
         }
@@ -39,63 +42,42 @@
             {
                 if (Inputs.ElementAt(i).Handler != null)
                 {
-                    await JsRuntime.InvokeVoidAsync("setWebComponentPropertyWithCallback", Id, $"inputs[{i}].handler", _thisRef, nameof(HandleInput), i);
+                    await JsRuntime.InvokeVoidAsync("setWebComponentPropertyWithCallback", Id, $"inputs[{i}].handler", ThisRef, nameof(HandleInput), i);
                 }
             }
         }
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionAlertDidDismiss", _thisRef, nameof(HandleDismissed));
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionAlertDidPresent", _thisRef, nameof(HandlePresented));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionAlertDidDismiss", ThisRef, nameof(HandleDismissed));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionAlertDidPresent", ThisRef, nameof(HandlePresented));
     }
-
 
     [JSInvokable(nameof(HandleButton))]
-    public Task HandleButton(object data, int id)
+    public Task HandleButton(IonAlertButtonHandlerData data, int id)
     {
-        
-        return Buttons.ElementAt(id).Handler(ParseData(data));
+        if (data?.Options?.ContainsKey("0") is true)
+        {
+            data = JsonSerializer.Deserialize<IonAlertButtonHandlerData>(((JsonElement) data.Options["0"]).GetRawText());
+        }
+        return Buttons.ElementAt(id).Handler(data);
     }
 
-
     [JSInvokable(nameof(HandleInput))]
-    public Task HandleInput(object data, int id)
+    public Task HandleInput(IonAlertInput data, int id)
     {
         return Inputs.ElementAt(id).Handler(data);
     }
 
 
-    [JSInvokable(nameof(HandlePresented))]
-    public override Task HandlePresented(object data)
-    {
-        return base.HandlePresented(ParseData(data));
-    }
-
-    [JSInvokable(nameof(HandleDismissed))]
-    public override Task HandleDismissed(object data)
-    {
-        return base.HandleDismissed(ParseData(data));
-    }
-
-    private IonAlertButtonHandlerData ParseData(object obj)
-    {
-        if (obj is JsonElement element)
-        {
-            var children = element.EnumerateObject();
-            if(children.Any())
-                return JsonSerializer.Deserialize<IonAlertButtonHandlerData>(element.EnumerateObject().First().Value.GetRawText());
-        }
-        return new IonAlertButtonHandlerData();
-    }
-
     public class IonAlertButtonHandlerData
     {
         [JsonExtensionData]
-        public Dictionary<string, object> Options { get; set; }
+        public Dictionary<string, object> Options { get; set; } = new Dictionary<string, object>();
     }
-    
+
     public class IonAlertButton
     {
         [JsonExtensionData]
         public Dictionary<string, object> Options { get; set; }
+
         [JsonIgnore]
         public Func<IonAlertButtonHandlerData, Task> Handler { get; set; }
     }
@@ -104,6 +86,7 @@
     {
         [JsonExtensionData]
         public Dictionary<string, object> Options { get; set; }
+
         [JsonIgnore]
         public Func<object, Task> Handler { get; set; }
     }

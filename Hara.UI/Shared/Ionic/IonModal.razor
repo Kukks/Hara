@@ -1,12 +1,13 @@
-@inject IJSRuntime JsRuntime
-@using System.Text.Json.Serialization
-@using System.Text.Json
-@inherits IonLoading
+@using Hara.UI.Shared.Ionic.Models
+@inherits BaseIonicPresentableComponent<object, Hara.UI.Shared.Ionic.Models.OverlayEventDetail<Hara.UI.Shared.Ionic.Models.IonicComponentDismissPayloadData>>
 <div style="display: none" @ref="modalContainer">
     <div @ref="modalContent">@ChildContent</div>
 </div>
 
 @code {
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -22,25 +23,7 @@
             {"component", modalContent}
         };
         await JsRuntime.InvokeVoidAsync("createElement", "ion-modal", Id, InputAttributes, data);
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidDismiss", _thisRef, nameof(HandleDismissed));
-        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidPresent", _thisRef, nameof(HandlePresented));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidDismiss", ThisRef, nameof(HandleDismissed));
+        await JsRuntime.InvokeVoidAsync("registerBlazorCustomHandler", Id, "ionModalDidPresent", ThisRef, nameof(HandlePresented));
     }
-
-    [JSInvokable(nameof(HandlePresented))]
-    public override Task HandlePresented(object data)
-    {
-        return base.HandlePresented(ParseData(data));
-    }
-
-    [JSInvokable(nameof(HandleDismissed))]
-    public override Task HandleDismissed(object data)
-    {
-        return base.HandleDismissed(ParseData(data));
-    }
-
-    private object ParseData(object obj)
-    {
-        return obj;
-    }
-
 }
