@@ -12,6 +12,7 @@
     <ion-button @onclick="ToggleLoader" expand="block">Toggle loader (currently @VisibleLoader)</ion-button>
     <ion-button @onclick="ToggleAlert" expand="block">Toggle alert (currently @VisibleAlert)</ion-button>
     <ion-button @onclick="ToggleModal" expand="block">Toggle modal (currently @VisibleModal)</ion-button>
+    <ion-button @onclick="ToggleActionSheet" expand="block">Toggle action sheet (currently @VisibleActionSheet)</ion-button>
     <ion-list>
         @foreach (var log in Logs)
         {
@@ -42,14 +43,16 @@
     </ion-content>
 </IonModal>
 <IonLoading @bind-Visible="@VisibleLoader" message="eeee" backdrop-dismiss="true"></IonLoading>
-<IonAlert @bind-Visible="@VisibleAlert" message="eeee" buttons="@buttons" inputs="@inputs" backdrop-dismiss="true"></IonAlert>
-
+<IonAlert @bind-Visible="@VisibleAlert" message="eeee" Buttons="buttons" Inputs="inputs" backdrop-dismiss="true"></IonAlert>
+<IonActionSheet t @bind-Visible="@VisibleActionSheet" Buttons="actionSheetButtons" header="An action sheet!"></IonActionSheet>
 @code {
 
     public IonAlert.IonAlertButton[] buttons;
+    public IonActionSheet.IonActionSheetButton[] actionSheetButtons;
     public IonAlert.IonAlertInput[] inputs;
     public List<string> Logs = new List<string>();
     private bool _visibleAlert;
+    private bool _visibleActionSheet;
     private bool _visibleModal;
     private bool _visibleLoader;
 
@@ -70,6 +73,16 @@
         {
             Logs.Add($"VisibleAlertChanged {value}");
             _visibleAlert = value;
+        }
+    }
+
+    public bool VisibleActionSheet
+    {
+        get => _visibleActionSheet;
+        set
+        {
+            Logs.Add($"VisibleActionSheetChanged {value}");
+            _visibleActionSheet = value;
         }
     }
 
@@ -94,7 +107,8 @@
             {
                 Options = new Dictionary<string, object>()
                 {
-                    {"text", "a button!"}
+                    {"text", "a button!"},
+                    {"role", "customrole"}
                 },
                 Handler = o =>
                 {
@@ -108,6 +122,39 @@
                 Options = new Dictionary<string, object>()
                 {
                     {"text", "Cancel"},
+                    {"role", "cancel"}
+                },
+                Handler = o =>
+                {
+                    var vals = string.Join(",", o.Options.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+                    Logs.Add($"cancel clicked! {vals}" );
+                    return Task.CompletedTask;
+                }
+            }
+        };
+        actionSheetButtons = new[]
+        {
+            new IonActionSheet.IonActionSheetButton()
+            {
+                Options = new Dictionary<string, object>()
+                {
+                    {"text", "a button!"},
+                    {"icon", "caret-forward-circle"},
+                    {"role", "customrole"}
+                },
+                Handler = o =>
+                {
+                    var vals = string.Join(",", o.Options.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+                    Logs.Add($"1st option clicked! {(vals)}" );
+                    return Task.CompletedTask;
+                }
+            },
+            new IonActionSheet.IonActionSheetButton()
+            {
+                Options = new Dictionary<string, object>()
+                {
+                    {"text", "Cancel"},
+                    {"icon", "cancel"},
                     {"role", "cancel"}
                 },
                 Handler = o =>
@@ -154,6 +201,11 @@
     private void ToggleModal()
     {
         VisibleModal = !VisibleModal;
+    }
+
+    private void ToggleActionSheet()
+    {
+        VisibleActionSheet = !VisibleActionSheet;
     }
 
 }
