@@ -3,14 +3,14 @@ namespace Hara.UI.Services
 {
     public class UIStateService
     {
-        private string _pageTitle;
+        private string _title;
 
-        public string PageTitle
+        public string Title
         {
-            get => _pageTitle;
+            get => _title;
             set
             {
-                _pageTitle = value;   
+                _title = value;
                 StateChanged?.Invoke();
             }
         }

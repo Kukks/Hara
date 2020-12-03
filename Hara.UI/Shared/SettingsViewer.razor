@@ -6,30 +6,27 @@
 {
     <h1>LOADING</h1>
 }
-<ul class="list-group">
+<ion-list>
     @for (int i = 0; i < Items.Count; i++)
     {
         var item = Items.ElementAt(i);
-        <li class="list-group-item">
-            <label>@item.Key</label>
-            <input  
-                class="form-control" type="text" value="@item.Value" @onchange="args => UpdateItem(item.Key, (string) args.Value)"/>
-            <button
-                class="btn btn-danger"
-                @onclick="() => RemoveItem(item.Key)">
-                remove
-            </button>
-        </li>
+        <ion-item-sliding>
+            <ion-item>
+                <ion-label>@item.Key</ion-label>
+                <ion-input type="text" value="@item.Value" @onchange="args => UpdateItem(item.Key, (string) args.Value)"> </ion-input>
+            </ion-item>
+            <ion-item-options side="end">
+                <ion-item-option @onclick="() => RemoveItem(item.Key)">Remove</ion-item-option>
+            </ion-item-options>
+        </ion-item-sliding>
     }
 
-    <li class="list-group-item form-group">
-        <input type="text" @bind="newKey" placeholder="Key" class="form-control"/>
-        <input
-            class="form-control"
-            type="text" placeholder="value" @bind="newValue"/>
-        <button @onclick="AddItem" class="btn btn-primary">Add</button>
-    </li>
-</ul>
+    <ion-item>
+        <ion-input type="text" value="@newKey" @onchange="Callback" placeholder="Key"> </ion-input>
+        <ion-input type="text" value="@newValue" placeholder="value" > </ion-input>
+        <ion-button @onclick="AddItem" class="btn btn-primary">Add</ion-button>
+    </ion-item>
+</ion-list>
 
 @code {
 
@@ -50,7 +47,7 @@
     private string newValue = "";
 
     [Parameter]
-    public  bool Encrypted { get; set; }
+    public bool Encrypted { get; set; }
 
     private Dictionary<string, string> Items { get; set; } = new Dictionary<string, string>();
 
@@ -96,6 +93,11 @@
             newKey = "";
             newValue = "";
         }
+    }
+
+    private void Callback()
+    {
+        throw new NotImplementedException();
     }
 
 }

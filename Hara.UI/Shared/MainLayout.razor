@@ -1,55 +1,39 @@
-﻿@using Hara.UI.Services
-@inherits LayoutComponentBase
-@inject NavigationManager NavigationManager
-@inject UIStateService UiStateService
-
+﻿@inherits LayoutComponentBase
+@using Hara.UI.Services
+@implements IDisposable
+@inject UIStateService StateService
 <ion-split-pane when="sm" content-id="main-content">
     <ion-menu content-id="main-content">
-        <ion-header>
-            <ion-toolbar color="primary">
-                <ion-title>Menu</ion-title>
-            </ion-toolbar>
-        </ion-header>
-
-        <ion-content>
-            <ion-list>
-                <ion-list-header>
-                    Navigate
-                </ion-list-header>
-                <ion-menu-toggle auto-hide="false">
-                    <ion-item href="" @onclick='() => NavigationManager.NavigateTo("")'  @onclick:preventDefault="true">
-                        <ion-icon slot="start" name='home'></ion-icon>
-                        <ion-label>
-                            Home
-                        </ion-label>
-                    </ion-item>
-                    <ion-item href="counter" @onclick='() => NavigationManager.NavigateTo("counter")'  @onclick:preventDefault="true">
-                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                        <ion-label>Counter</ion-label>
-                    </ion-item>
-
-                    <ion-item href="cards" @onclick='() => NavigationManager.NavigateTo("cards")'  @onclick:preventDefault="true">
-                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                        <ion-label>Cards</ion-label>
-                    </ion-item>
-                    <ion-item href="fetchdata" @onclick='() => NavigationManager.NavigateTo("fetchdata")'  @onclick:preventDefault="true">
-                        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                        <ion-label>Weather Forecast</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-            </ion-list>
-        </ion-content>
+        <NavMenu/>
     </ion-menu>
 
-    <div class="ion-page" id="main-content">
+    <ion-page class="ion-page" id="main-content">
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
                     <ion-menu-button></ion-menu-button>
                 </ion-buttons>
-                <ion-title>@UiStateService.PageTitle</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button href="http://blazor.net" target="_blank">About</ion-button>
+                </ion-buttons>
+                <ion-title>@StateService.Title</ion-title>
             </ion-toolbar>
         </ion-header>
         @Body
-    </div>
+    </ion-page>
 </ion-split-pane>
+
+@code{
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StateService.StateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        StateService.StateChanged -= StateHasChanged;
+    }
+
+}

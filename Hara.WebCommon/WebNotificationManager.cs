@@ -12,6 +12,8 @@ namespace Hara.WebCommon
         private const string RequestPermissionFunctionName = "BlazorExtensions.Notifications.RequestPermission";
         private const string CreateFunctionName = "BlazorExtensions.Notifications.Create";
         private readonly IJSRuntime _jsRuntime;
+
+        public bool Initialized { get; private set; }
         public event EventHandler<NotificationEventArgs> NotificationReceived;
 
         public WebNotificationManager(IJSRuntime jsRuntime)
@@ -21,8 +23,9 @@ namespace Hara.WebCommon
 
         public async Task<bool> Initialize()
         {
-            return await IsSupportedByBrowserAsync() &&
-                   await RequestPermissionAsync() == PermissionType.Granted;
+            Initialized = await IsSupportedByBrowserAsync() &&
+                          await RequestPermissionAsync() == PermissionType.Granted;
+            return Initialized;
         }
 
         public async Task<string> ScheduleNotification(string title, string message)
@@ -44,11 +47,12 @@ namespace Hara.WebCommon
                 Message = message
             });
         }
-        
+
         public ValueTask<bool> IsSupportedByBrowserAsync()
         {
             return _jsRuntime.InvokeAsync<bool>(AreSupportedFunctionName);
         }
+
         public async Task<PermissionType> RequestPermissionAsync()
         {
             string permission = await _jsRuntime.InvokeAsync<string>(RequestPermissionFunctionName);
@@ -61,6 +65,5 @@ namespace Hara.WebCommon
 
             return PermissionType.Default;
         }
-
     }
 }

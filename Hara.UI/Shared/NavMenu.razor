@@ -1,37 +1,35 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">My Hybrid App</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inject NavigationManager NavigationManager
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Menu</ion-title>
+    </ion-toolbar>
+</ion-header>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+<ion-content>
+    <ion-list>
+        <ion-list-header>
+            Navigate
+        </ion-list-header>
+        <ion-menu-toggle auto-hide="false">
+            <ion-item href="" @onclick='() => NavigationManager.NavigateTo("")' @onclick:preventDefault="true">
+                <ion-icon slot="start" name='home'></ion-icon>
+                <ion-label>
+                    Home
+                </ion-label>
+            </ion-item>
+            <ion-item href="counter" @onclick='() => NavigationManager.NavigateTo("counter")' @onclick:preventDefault="true">
+                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                <ion-label>Counter</ion-label>
+            </ion-item>
 
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+            <ion-item href="cards" @onclick='() => NavigationManager.NavigateTo("cards")' @onclick:preventDefault="true">
+                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                <ion-label>Cards</ion-label>
+            </ion-item>
+            <ion-item href="fetchdata" @onclick='() => NavigationManager.NavigateTo("fetchdata")' @onclick:preventDefault="true">
+                <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+                <ion-label>Weather Forecast</ion-label>
+            </ion-item>
+        </ion-menu-toggle>
+    </ion-list>
+</ion-content>

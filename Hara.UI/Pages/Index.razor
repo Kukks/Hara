@@ -2,26 +2,28 @@
 @using Hara.UI.Services
 
 @inject UIStateService UiStateService
-Welcome to your new app.
-<hr/>
-<SurveyPrompt Title="How is Blazor working for you?" />
-<hr/>
-<h2>normal settings </h2>
-<SettingsViewer Encrypted="false"></SettingsViewer>
-<hr/>
-<h2>Encrypted settings </h2>
-<SettingsViewer Encrypted="true"></SettingsViewer>
-<hr/>
-<NotificationsTest></NotificationsTest>
-<hr/>
-<a href="https://webauthn.io/">Testing!</a>
+
+<ion-content class="ion-padding">
+    Welcome to your new app.
+    <hr/>
+    <SurveyPrompt Title="How is Blazor working for you?"/>
+    <hr/>
+    <h2>normal settings </h2>
+    <SettingsViewer Encrypted="false"></SettingsViewer>
+    <hr/>
+    <h2>Encrypted settings </h2>
+    <SettingsViewer Encrypted="true"></SettingsViewer>
+    <hr/>
+    <NotificationsTest></NotificationsTest>
+    <hr/>
+</ion-content>
 
 @code{
 
 
     protected override void OnInitialized()
     {
-        UiStateService.PageTitle = "Hello World!";
+        UiStateService.Title = "Hello World!";
         base.OnInitialized();
     }
 

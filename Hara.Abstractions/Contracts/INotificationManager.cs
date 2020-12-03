@@ -5,6 +5,7 @@ namespace Hara.Abstractions.Contracts
 {
     public interface INotificationManager
     {
+        bool Initialized { get; }
         event EventHandler<NotificationEventArgs> NotificationReceived;
 
         Task<bool> Initialize();

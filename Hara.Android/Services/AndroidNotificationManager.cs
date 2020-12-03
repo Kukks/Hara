@@ -25,11 +25,13 @@ namespace LocalNotifications.Droid
         int messageId = -1;
         NotificationManager manager;
 
+        public bool Initialized { get; private set; }
         public event EventHandler<NotificationEventArgs> NotificationReceived;
 
         public Task<bool> Initialize()
         {
             CreateNotificationChannel();
+            Initialized = true;
             return Task.FromResult(true);
         }
 

@@ -2,9 +2,9 @@
 @inject INotificationManager NotificationManager
 <h3>Notifications Test</h3>
 Notifications initialized = @Init 
-@if (!Init)
+@if (!NotificationManager.Initialized)
 {
-    <button @onclick="Initialize" type="button" class="btn btn-primary">set up</button>
+    <button @onclick="NotificationManager.Initialize" type="button" class="btn btn-primary">set up</button>
 }
 else
 {
@@ -35,12 +35,7 @@ else
             Init = await NotificationManager.Initialize();
         }
     }
-
-    private async Task Initialize()
-    {
-        Init = await NotificationManager.Initialize();
-    }
-
+    
     private async Task SendNotification()
     {
         await NotificationManager.ScheduleNotification("test", "test body");

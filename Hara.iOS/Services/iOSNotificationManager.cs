@@ -12,7 +12,7 @@ namespace Hara.iOS.Services
             int messageId = -1;
 
             bool hasNotificationsPermission;
-
+            public bool Initialized { get; private set; }
             public event EventHandler<NotificationEventArgs> NotificationReceived;
 
             public Task<bool> Initialize()
@@ -22,6 +22,7 @@ namespace Hara.iOS.Services
                 {
                     hasNotificationsPermission = approved;
                 });
+                Initialized = true;
                 return Task.FromResult(true);
             }
 
