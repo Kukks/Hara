@@ -16,6 +16,8 @@
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release' ">
         <DefineConstants>LIVESHARP_DISABLE</DefineConstants>
+        <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+
     </PropertyGroup>
 
     <ItemGroup Condition="'$(Configuration)' != 'Release' ">
