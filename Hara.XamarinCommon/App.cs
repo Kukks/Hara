@@ -1,10 +1,10 @@
 ﻿using System;
-using Hara.Abstractions;
 using Hara.Abstractions.Contracts;
 using Hara.Abstractions.Services;
 using Hara.UI.Services;
 using Hara.XamarinCommon.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.MobileBlazorBindings;
@@ -25,16 +25,16 @@ namespace Hara.XamarinCommon
                                       {
                                           // Adds web-specific services such as NavigationManager
                                           services.AddBlazorHybrid();
-                      
+                                          configureDI?.Invoke(services);
                                           services.AddUIServices();
                                           // Register app-specific services
-                                          services.AddSingleton<ICounterState, CounterState>();
-                                          services.AddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
-                                          services.AddSingleton<IWebsiteLauncher, XamarinEssentialsWebsiteLauncher>();
-                                          services.AddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
-                                          services.AddSingleton<IConfigProvider, XamarinEssentialsConfigProvider>();
-                                          services.AddSingleton<ISecureConfigProvider, XamarinEssentialsSecureConfigProvider>();
-                                          configureDI?.Invoke(services);
+                                          services.TryAddSingleton<ICounterState, CounterState>();
+                                          services.TryAddSingleton<ILocalContentFetcher, FileProviderLocalContentFetcher>();
+                                          services.TryAddSingleton<IWebsiteLauncher, XamarinEssentialsWebsiteLauncher>();
+                                          services.TryAddSingleton<IWeatherForecastFetcher, WeatherForecastFetcher>();
+                                          services.TryAddSingleton<IConfigProvider, XamarinEssentialsConfigProvider>();
+                                          services.TryAddSingleton<ISecureConfigProvider, XamarinEssentialsSecureConfigProvider>();
+                                          
                                       })
                                       .UseWebRoot("wwwroot");
                       
