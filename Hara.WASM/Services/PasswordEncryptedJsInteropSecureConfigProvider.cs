@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Hara.Abstractions.Contracts;
+using Hara.Abstractions.Services;
 using Hara.WebCommon;
 using Microsoft.JSInterop;
 

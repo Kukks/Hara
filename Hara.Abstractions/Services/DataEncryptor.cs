@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hara.WASM.Services
+namespace Hara.Abstractions.Services
 {
     public class DataEncryptor
     {
