@@ -1,4 +1,4 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits BlazorTransitionableRoute.TransitionableLayoutComponent
 @using Hara.UI.Services
 @implements IDisposable
 @inject UIStateService StateService
@@ -28,12 +28,12 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        StateService.StateChanged += StateHasChanged;
+        StateService.StateChanged += () => InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        StateService.StateChanged -= StateHasChanged;
+        StateService.StateChanged -= () => InvokeAsync(StateHasChanged);
     }
 
 }

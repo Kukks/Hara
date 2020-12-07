@@ -56,7 +56,7 @@
         UiStateService.Title = "Weather forecast";
         _ = Task.Run(async () =>
         {
-            await Task.Delay(5000);
+            await Task.Delay(1000);
             _forecasts = await WeatherForecastFetcher.Fetch();
             await InvokeAsync(StateHasChanged);
         });

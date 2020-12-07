@@ -57,5 +57,6 @@ namespace Hara.Droid
                 _app.ServiceProvider.GetService<INotificationManager>().ReceiveNotification(title, message);
             }
         }
+        
     }
 }
