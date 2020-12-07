@@ -1,5 +1,6 @@
+@using Hara.UI.Services
 @inherits BlazorTransitionableRoute.TransitionableLayoutComponent
-
+@inject UIStateService UIStateService
 <div class="transition @TransitionClass">
     @Body
 </div>
@@ -67,8 +68,10 @@
                     res += "out ";
                 }
                 res += Transition.Backwards ? "slide-out" : "slide-in";
+                
             }
             return res;
         }
     }
+
 }

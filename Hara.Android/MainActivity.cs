@@ -1,8 +1,10 @@
-﻿using Android.App;
+﻿using System.Linq;
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
+using Android.Views;
 using Hara.Abstractions.Contracts;
 using Hara.XamarinCommon;
 using LocalNotifications.Droid;
@@ -17,6 +19,7 @@ namespace Hara.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private App _app;
+        private IUIStateService _uiStateService;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -31,7 +34,7 @@ namespace Hara.Droid
             _app = new App(fileProvider,
                 collection => { collection.AddSingleton<INotificationManager, AndroidNotificationManager>(); });
             LoadApplication(_app);
-
+            _uiStateService = _app.ServiceProvider.GetService<IUIStateService>();
             CreateNotificationFromIntent(Intent);
         }
 
@@ -41,6 +44,17 @@ namespace Hara.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public override void OnBackPressed()
+        {
+            if (_uiStateService.AnyStackState)
+            {
+                _uiStateService.InvokeStackState().GetAwaiter().GetResult();
+                return;
+            }
+
+            base.OnBackPressed();
         }
 
         protected override void OnNewIntent(Intent intent)
@@ -57,6 +71,5 @@ namespace Hara.Droid
                 _app.ServiceProvider.GetService<INotificationManager>().ReceiveNotification(title, message);
             }
         }
-        
     }
 }

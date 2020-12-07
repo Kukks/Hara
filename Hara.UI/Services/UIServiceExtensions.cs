@@ -1,4 +1,5 @@
 using BlazorTransitionableRoute;
+using Hara.Abstractions.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hara.UI.Services
@@ -8,7 +9,8 @@ namespace Hara.UI.Services
         public static IServiceCollection AddUIServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<UIStateService>();
-            serviceCollection.AddScoped<BlazorTransitionableRoute.IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
+            serviceCollection.AddSingleton<IUIStateService>(provider => provider.GetService<UIStateService>());
+            serviceCollection.AddScoped<IRouteTransitionInvoker, DefaultRouteTransitionInvoker>();
 
             return serviceCollection;
         }

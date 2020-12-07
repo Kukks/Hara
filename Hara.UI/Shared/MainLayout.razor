@@ -2,16 +2,25 @@
 @using Hara.UI.Services
 @implements IDisposable
 @inject UIStateService StateService
-<ion-split-pane when="sm" content-id="main-content">
-    <ion-menu content-id="main-content">
-        <NavMenu/>
-    </ion-menu>
-
+<ion-split-pane when="sm" content-id="main-content" disabled="@StateService.AnyStackState">
+    @if (!StateService.AnyStackState)
+    {
+        <ion-menu content-id="main-content">
+            <NavMenu/>
+        </ion-menu>
+    }
     <ion-page class="ion-page" id="main-content">
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
-                    <ion-menu-button></ion-menu-button>
+                    @if (StateService.AnyStackState)
+                    {
+                        <ion-back-button @onclick="Callback" @onclick:preventDefault="true" default-href="lol"></ion-back-button>
+                    }
+                    else
+                    {
+                        <ion-menu-button></ion-menu-button>
+                    }
                 </ion-buttons>
                 <ion-buttons slot="end">
                     <ion-button href="http://blazor.net" target="_blank">About</ion-button>
@@ -28,12 +37,22 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        StateService.StateChanged += () => InvokeAsync(StateHasChanged);
+        StateService.StateChanged += StateChangedAsync;
     }
 
     public void Dispose()
     {
-        StateService.StateChanged -= () => InvokeAsync(StateHasChanged);
+        StateService.StateChanged -= StateChangedAsync;
+    }
+
+    private async void StateChangedAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private Task Callback()
+    {
+        return StateService.InvokeStackState();
     }
 
 }
