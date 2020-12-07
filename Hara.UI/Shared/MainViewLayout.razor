@@ -55,7 +55,6 @@
 
 @code {
 
-
     private string TransitionClass
     {
         get
@@ -67,9 +66,12 @@
                 {
                     res += "out ";
                 }
+                Console.WriteLine($"{Transition.IntoView} , {Transition.Backwards}, {Transition.FirstRender}");
                 res += Transition.Backwards ? "slide-out" : "slide-in";
                 
             }
+            
+            Console.WriteLine($"{res}");
             return res;
         }
     }

@@ -3,6 +3,7 @@
 @inject ICounterState CounterState
 @inject UIStateService UiStateService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 @using Hara.Abstractions.Contracts
 @using Hara.UI.Services
 @implements IDisposable
@@ -37,6 +38,7 @@
 
     private void GoForward()
     {
+        
         UiStateService.PushStackState(AddToStack(Stack.Value));
         
         NavigationManager.NavigateTo($"counter/{Stack+1}");
@@ -45,11 +47,11 @@
 
     private Func<Task> AddToStack(int i)
     {
-        return () =>
+        return async () =>
         {
+            await JsRuntime.InvokeVoidAsync("dispatchEventWrapper", "back");
 
             NavigationManager.NavigateTo($"counter/{i}");
-            return Task.CompletedTask;
         };
     }
 

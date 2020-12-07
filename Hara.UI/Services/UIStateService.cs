@@ -10,6 +10,7 @@ namespace Hara.UI.Services
     {
         private string _title;
         private Stack<Func<Task>> _stackedStates = new Stack<Func<Task>>();
+      
         public string Title
         {
             get => _title;
